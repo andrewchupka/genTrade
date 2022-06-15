@@ -1,14 +1,23 @@
 package main
 
 import (
-	finnhub "genTrade/integrations";
+	"fmt"
+	constants "genTrade/helpers"
+	finnIntegration "genTrade/integrations"
+	
+
+	// "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
 
 func main() {
-	finn := finnhub.NewFinnhub() 
+	
+	finn := finnIntegration.NewFinnhub()
+	resultList := finn.ListLookup(constants.SYMBOL_LIST[:])
+	fmt.Println("done")
+	
+	for val := range resultList {
+		fmt.Println(val)
+	}
 
-	finn.Lookup("APPL")
-	finn.Lookup("DKS")
-	finn.Lookup("BTC")
-	finn.Lookup("HSGD")
+	
 }
