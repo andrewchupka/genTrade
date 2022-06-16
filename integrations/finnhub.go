@@ -42,7 +42,6 @@ func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup{
 	wg.Add(symbolsLength)
 
 	lookupChannel := make(chan finnhub.SymbolLookup, symbolsLength)
-	defer close(lookupChannel)
 
 	for _, symbol := range list {
 
@@ -55,6 +54,7 @@ func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup{
 	}
 
 	wg.Wait()
+	close(lookupChannel)
 
 	var resultList []finnhub.SymbolLookup
 	for  result := range lookupChannel {

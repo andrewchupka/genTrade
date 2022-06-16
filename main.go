@@ -15,8 +15,13 @@ func main() {
 	resultList := finn.ListLookup(constants.SYMBOL_LIST[:])
 	fmt.Println("done")
 	
-	for val := range resultList {
-		fmt.Println(val)
+	for _, item := range resultList {
+		for _, symbolLookupInfo := range item.GetResult() {
+			fmt.Println("Display Symbol:", symbolLookupInfo.GetDisplaySymbol())
+			fmt.Println("Description: ", symbolLookupInfo.GetDescription())
+			fmt.Println()
+		}
+		fmt.Println("----------------------")
 	}
 
 	
