@@ -12,8 +12,11 @@ import (
 func main() {
 	
 	finn := finnIntegration.NewFinnhub()
-	doLookup(*finn)
-	getFinancials(*finn)
+	// doLookup(*finn)
+	// getFinancials(*finn)
+
+	// hard coded to getting bitcoin
+	finn.TradeLookup(constants.SYMBOL_LIST[3])
 }
 
 func doLookup(finn finnIntegration.Finnhub) []finnhub.SymbolLookup{

@@ -8,13 +8,15 @@ import (
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
 
+const TOKEN string = "sandbox_cagtomiad3i02fchd2ng"
+
 type Finnhub struct {
 	client *finnhub.DefaultApiService
 }
 
 func NewFinnhub() *Finnhub {
 	config := finnhub.NewConfiguration()
-	config.AddDefaultHeader("X-Finnhub-Token", "sandbox_cagtomiad3i02fchd2ng")
+	config.AddDefaultHeader("X-Finnhub-Token", TOKEN)
 
 	finn := new(Finnhub)
 	finn.client = finnhub.NewAPIClient(config).DefaultApi
@@ -106,4 +108,14 @@ func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancial
 	}
 	return resultList
 	
+}
+
+func (finn *Finnhub) TradeLookup(symbol string) {
+	messages := make(chan string)
+
+	handleWebSocketConnection(symbol, messages, TOKEN)
+
+	for {
+		fmt.Printf("In Finnhub messages: %s", <-messages )
+	}
 }

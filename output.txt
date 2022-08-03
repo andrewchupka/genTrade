@@ -3,80 +3,13 @@ Started lookup for tesla
 Started lookup for Dick's
 Started lookup for Bitcoin
 Performing lookup for  Bitcoin
-Performing lookup for  Appl
-Performing lookup for  Dick's
 Performing lookup for  tesla
-Finished lookup for  Appl
+Performing lookup for  Dick's
+Performing lookup for  Appl
 Finished lookup for  Dick's
+Finished lookup for  Appl
 Finished lookup for  tesla
 Finished lookup for  Bitcoin
-Display Symbol: A3KUT3.DU
-Description:  Apple
-
-Display Symbol: A1HKKY.BE
-Description:  Apple
-
-Display Symbol: APCX.MU
-Description:  Apple
-
-Display Symbol: A2R7JT.DU
-Description:  Apple
-
-Display Symbol: A2R7JV.BE
-Description:  Apple
-
-Display Symbol: A1Z5RD.BE
-Description:  Apple
-
-Display Symbol: A3KUT4.BE
-Description:  Apple
-
-Display Symbol: A1HKKY.DU
-Description:  Apple
-
-Display Symbol: A3KUT4.MU
-Description:  Apple
-
-Display Symbol: A3KUT3.BE
-Description:  Apple
-
-Display Symbol: APCU.HM
-Description:  Apple
-
-Display Symbol: A19C0M.DU
-Description:  Apple
-
-Display Symbol: A3KUT5.BE
-Description:  Apple
-
-Display Symbol: APCT.HM
-Description:  Apple
-
-Display Symbol: APCA.BE
-Description:  Apple
-
-Display Symbol: A3KUT4.DU
-Description:  Apple
-
-Display Symbol: A1HKKY.MU
-Description:  Apple
-
-Display Symbol: A3KUT6.DU
-Description:  Apple
-
-Display Symbol: A3KUT5.MU
-Description:  Apple
-
-Display Symbol: APCU.DU
-Description:  Apple
-
-Display Symbol: APCX.DU
-Description:  Apple
-
-Display Symbol: A2R7JV.MU
-Description:  Apple
-
-----------------------
 Display Symbol: DKS
 Description:  DICK'S SPORTING GOODS INC
 
@@ -105,43 +38,113 @@ Display Symbol: DSG.DE
 Description:  DICK'S SPORTING GOODS INC
 
 ----------------------
+Display Symbol: APCU.MU
+Description:  Apple
+
+Display Symbol: A1HKKY.MU
+Description:  Apple
+
+Display Symbol: A1Z5RD.HA
+Description:  Apple
+
+Display Symbol: APCL.BE
+Description:  Apple
+
+Display Symbol: A3KUT4.BE
+Description:  Apple
+
+Display Symbol: APCX.DU
+Description:  Apple
+
+Display Symbol: APCT.MU
+Description:  Apple
+
+Display Symbol: APCL.HM
+Description:  Apple
+
+Display Symbol: A3KUT6.MU
+Description:  Apple
+
+Display Symbol: A3KUT3.DU
+Description:  Apple
+
+Display Symbol: A19C0M.MU
+Description:  Apple
+
+Display Symbol: APCT.HA
+Description:  Apple
+
+Display Symbol: APCA.DU
+Description:  Apple
+
+Display Symbol: APCA.HA
+Description:  Apple
+
+Display Symbol: A3KUT5.DU
+Description:  Apple
+
+Display Symbol: A19C0M.DU
+Description:  Apple
+
+Display Symbol: A19C0M.BE
+Description:  Apple
+
+Display Symbol: APCX.BE
+Description:  Apple
+
+Display Symbol: APCT.DU
+Description:  Apple
+
+Display Symbol: APCU.DU
+Description:  Apple
+
+Display Symbol: A3KUT3.MU
+Description:  Apple
+
+Display Symbol: A19C0M.HA
+Description:  Apple
+
+----------------------
 Display Symbol: TSLA
 Description:  TESLA INC
 
 Display Symbol: TL0.HA
 Description:  Tesla Inc
 
-Display Symbol: TL0.MU
-Description:  TESLA INC
-
 Display Symbol: TSLA-RM.ME
-Description:  TESLA INC
-
-Display Symbol: TL0.DE
-Description:  TESLA INC
-
-Display Symbol: TSLA.MX
-Description:  TESLA INC
-
-Display Symbol: TL0.F
 Description:  TESLA INC
 
 Display Symbol: TL0.BE
 Description:  TESLA INC
 
+Display Symbol: TSLA.VI
+Description:  TESLA INC
+
+Display Symbol: TL0.MU
+Description:  TESLA INC
+
 Display Symbol: TSLAUSD.SW
+Description:  TESLA INC
+
+Display Symbol: TL0.DE
+Description:  TESLA INC
+
+Display Symbol: TL0.F
+Description:  TESLA INC
+
+Display Symbol: TSLA.MX
 Description:  TESLA INC
 
 Display Symbol: TL0.DU
 Description:  TESLA INC
 
-Display Symbol: TSLA.VI
+Display Symbol: TL0.SG
+Description:  TESLA INC
+
+Display Symbol: TL0.HM
 Description:  TESLA INC
 
 Display Symbol: TSLA.SW
-Description:  TESLA INC
-
-Display Symbol: TL0.SG
 Description:  TESLA INC
 
 Display Symbol: TSLA.MI
@@ -150,22 +153,19 @@ Description:  TESLA INC
 Display Symbol: 0R0X.L
 Description:  TESLA INC
 
-Display Symbol: TL0.HM
-Description:  TESLA INC
-
 Display Symbol: 0A1V.L
 Description:  Tethys Oil Ab
 
-Display Symbol: 9TS.BE
+Display Symbol: 9TS.F
 Description:  TUBESOLAR AG
 
 Display Symbol: 9TS.SG
 Description:  TUBESOLAR AG
 
-Display Symbol: 9TS.F
+Display Symbol: 9TS.MU
 Description:  TUBESOLAR AG
 
-Display Symbol: 9TS.DE
+Display Symbol: 9TS.BE
 Description:  TUBESOLAR AG
 
 Display Symbol: 9TS.DU
@@ -175,23 +175,20 @@ Description:  TUBESOLAR AG
 Display Symbol: BITMF
 Description:  Bittium Corporation
 
-Display Symbol: CBTC
-Description:  XTRA BITCOIN INC
+Display Symbol: BTGGF
+Description:  BITCOIN GROUP SE
 
 Display Symbol: WBIT.MU
 Description:  WisdomTree Bitcoin
 
-Display Symbol: COIN/BTC
-Description:  Bittrex COIN/BTC
-
 Display Symbol: COIN/USD
 Description:  Bittrex COIN/USD
 
-Display Symbol: EBIT.TWO
-Description:  BITCOIN ETF-CAD
+Display Symbol: COIN/BTC
+Description:  Bittrex COIN/BTC
 
-Display Symbol: COIN/USDT
-Description:  Bittrex COIN/USDT
+Display Symbol: EBIT.NE
+Description:  BITCOIN ETF-CAD
 
 Display Symbol: EBIT.U.TWO
 Description:  BITCOIN ETF-USD
@@ -199,44 +196,47 @@ Description:  BITCOIN ETF-USD
 Display Symbol: 7GSA.DU
 Description:  Global Switch Holdings
 
-Display Symbol: EBIT.U.NE
-Description:  BITCOIN ETF-USD
-
-Display Symbol: 7GSA.MU
-Description:  Global Switch Holdings
-
 Display Symbol: EBIT.U.TO
 Description:  BITCOIN ETF-USD
+
+Display Symbol: COIN/USDT
+Description:  Bittrex COIN/USDT
 
 Display Symbol: 7GSA.BE
 Description:  Global Switch Holdings
 
+Display Symbol: EBIT.TWO
+Description:  BITCOIN ETF-CAD
+
+Display Symbol: EBIT.U.NE
+Description:  BITCOIN ETF-USD
+
 Display Symbol: EBIT.TO
 Description:  BITCOIN ETF-CAD
 
-Display Symbol: EBIT.NE
-Description:  BITCOIN ETF-CAD
+Display Symbol: 7GSA.MU
+Description:  Global Switch Holdings
 
-Display Symbol: A19JCL.BE
-Description:  Global Switch Holdings 
-
-Display Symbol: ADE.SG
+Display Symbol: ADE.HA
 Description:  BITCOIN GROUP SE
 
-Display Symbol: BTCW.TWO
+Display Symbol: ADE.MU
+Description:  BITCOIN GROUP SE
+
+Display Symbol: 0RWM.L
+Description:  BITCOIN GROUP SE
+
+Display Symbol: MV8Q.BE
+Description:  Mobio Technologies Inc
+
+Display Symbol: BTCW.NE
 Description:  BITCOIN WELL INC
-
-Display Symbol: ADE.DE
-Description:  BITCOIN GROUP SE
-
-Display Symbol: QBTC.TO
-Description:  BITCOIN FUND/THE
 
 Display Symbol: ADE.BE
 Description:  BITCOIN GROUP SE
 
-Display Symbol: ADE.HA
-Description:  BITCOIN GROUP SE
+Display Symbol: BTCW.V
+Description:  BITCOIN WELL INC
 
 ----------------------
 Started basic financials lookup for Appl
@@ -244,23 +244,23 @@ Started basic financials lookup for tesla
 Started basic financials lookup for Dick's
 Started basic financials lookup for Bitcoin
 Performing basic financial lookup for Appl
-Performing basic financial lookup for Dick's
-Performing basic financial lookup for Bitcoin
 Performing basic financial lookup for tesla
+Performing basic financial lookup for Bitcoin
+Performing basic financial lookup for Dick's
 Finished financial lookup for  Appl
-Finished financial lookup for  Dick's
 Finished financial lookup for  tesla
+Finished financial lookup for  Dick's
 Finished financial lookup for  Bitcoin
 Display Symbol: Appl
 Data:  {"metric":{},"metricType":"all","series":{},"symbol":"Appl"}
 
 ----------------------
-Display Symbol: Dick's
-Data:  {"metric":{},"metricType":"all","series":{},"symbol":"Dick's"}
-
-----------------------
 Display Symbol: tesla
 Data:  {"metric":{},"metricType":"all","series":{},"symbol":"tesla"}
+
+----------------------
+Display Symbol: Dick's
+Data:  {"metric":{},"metricType":"all","series":{},"symbol":"Dick's"}
 
 ----------------------
 Display Symbol: Bitcoin
