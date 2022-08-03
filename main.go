@@ -6,14 +6,18 @@ import (
 	finnIntegration "genTrade/integrations"
 	
 
-	// "github.com/Finnhub-Stock-API/finnhub-go/v2"
+	"github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
 
 func main() {
 	
 	finn := finnIntegration.NewFinnhub()
+	doLookup(*finn)
+	getFinancials(*finn)
+}
+
+func doLookup(finn finnIntegration.Finnhub) []finnhub.SymbolLookup{
 	resultList := finn.ListLookup(constants.SYMBOL_LIST[:])
-	fmt.Println("done")
 	
 	for _, item := range resultList {
 		for _, symbolLookupInfo := range item.GetResult() {
@@ -24,5 +28,22 @@ func main() {
 		fmt.Println("----------------------")
 	}
 
-	
+	return resultList
 }
+
+func getFinancials(finn finnIntegration.Finnhub) []finnhub.BasicFinancials {
+	resultList := finn.ListBasicFinancials(constants.SYMBOL_LIST[:])
+	
+	for _, item := range resultList {
+		fmt.Println("Display Symbol:", item.GetSymbol())
+		data, _ := item.MarshalJSON()
+		fmt.Println("Data: ", string(data))
+		fmt.Println()
+		
+		fmt.Println("----------------------")
+	}
+
+	return resultList
+}
+
+

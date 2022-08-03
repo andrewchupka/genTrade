@@ -63,3 +63,47 @@ func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup{
 	return resultList
 
 }
+
+func (finn *Finnhub) BasicFinancials(symb string) finnhub.BasicFinancials{
+	fmt.Printf("Performing basic financial lookup for %s\n", symb)
+
+	res, _, err := finn.client.CompanyBasicFinancials(context.Background()).Symbol(symb).Metric("all").Execute()
+	if (err != nil) {
+		fmt.Println(err)
+		panic(err)
+	}
+	
+	fmt.Println("Finished financial lookup for ", symb)
+
+	return res
+	
+}
+
+func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancials {
+	var symbolsLength int = len(list)
+
+	var wg sync.WaitGroup
+	wg.Add(symbolsLength)
+
+	lookupChannel := make(chan finnhub.BasicFinancials, symbolsLength)
+
+	for _, symbol := range list {
+
+		go func(lookupChannel chan finnhub.BasicFinancials, symbol string, wg *sync.WaitGroup) {
+			defer wg.Done()
+			lookupChannel <- finn.BasicFinancials(symbol)
+		}(lookupChannel, symbol, &wg)
+
+		fmt.Printf("Started basic financials lookup for %s\n", symbol)
+	}
+
+	wg.Wait()
+	close(lookupChannel)
+
+	var resultList []finnhub.BasicFinancials
+	for  result := range lookupChannel {
+		resultList = append(resultList, result)
+	}
+	return resultList
+	
+}
