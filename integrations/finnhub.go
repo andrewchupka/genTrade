@@ -3,12 +3,16 @@ package integrations
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
 	"sync"
 
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
 
-const TOKEN string = "sandbox_cagtomiad3i02fchd2ng"
+var SANDBOX_TOKEN string = os.Getenv("FINNHUB_SANDBOX")
+var TOKEN string = os.Getenv("FINNHUB_TOKEN")
 
 type Finnhub struct {
 	client *finnhub.DefaultApiService
@@ -110,12 +114,24 @@ func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancial
 	
 }
 
-func (finn *Finnhub) TradeLookup(symbol string) {
+func (finn *Finnhub) TradeLookup(symbols []string) {
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
 	messages := make(chan string)
 
-	handleWebSocketConnection(symbol, messages, TOKEN)
+	for _, symbol := range(symbols) {
+		go handleWebSocketConnection(symbol, messages, TOKEN)
+	}
 
 	for {
-		fmt.Printf("In Finnhub messages: %s", <-messages )
+		select {
+		case <-interrupt:
+			log.Println("Interrupted")
+			return
+		case message := <- messages:
+			fmt.Printf("In Finnhub messages: %s\n", message)
+
+		}
 	}
 }

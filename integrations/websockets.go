@@ -1,6 +1,7 @@
 package integrations
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -22,8 +23,9 @@ func handleWebSocketConnection(symbol string, outGoingMessages chan string, toke
 	defer connection.Close()
 
 	// write outgoing message to it
-	var body string = makeSubscriptionString(symbol)
-	err = connection.WriteMessage(websocket.TextMessage, []byte(body))
+	var body []byte = makeSubscriptionString(symbol)
+	fmt.Println(string(body))
+	err = connection.WriteMessage(websocket.TextMessage, body)
 	if err != nil {
 		log.Fatal("handleWebSocketConnection:", err)
 		panic(fmt.Sprintf("Error writing on connection: {message: %s}; {error: %s}", body, err))
@@ -33,32 +35,34 @@ func handleWebSocketConnection(symbol string, outGoingMessages chan string, toke
 
 	go readMessages(messageStream, connection)
 
+	fmt.Println("Popping messages off the channel")
 	for {
+
 		select {
-		case message := <- messageStream:
+		case message := <-messageStream:
 			outGoingMessages <- message
-			log.Println(message)
-			return
-		case <- interrupt:
+			// log.Println(message)
+		case <-interrupt:
 			err := connection.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 			if err != nil {
 				log.Printf("Error closing connection: {%s}\n", err)
 			}
-			return 
+			log.Println("Closed connection to websocket")
+			return
 		}
 	}
 
 }
 
 func openConnection(token string) (*websocket.Conn, error) {
-	serverUrl := url.URL{Scheme: "ws", Host: "ws.finnhub.io", RawQuery: fmt.Sprintf("token=%s", token) }
+	serverUrl := url.URL{Scheme: "wss", Host: "ws.finnhub.io", RawQuery: fmt.Sprintf("token=%s", token)}
 
 	fmt.Println(serverUrl.String())
 
-	c, _, err := websocket.DefaultDialer.Dial(serverUrl.String(), nil)
+	c, responseCode, err := websocket.DefaultDialer.Dial(serverUrl.String(), nil)
 	if err != nil {
-		log.Fatal("openWebSocketConnection: ", err)
-		panic(fmt.Sprintf("Error opening connection to %s; {%s}", serverUrl.String(), err))
+		log.Fatal(fmt.Sprintf("%s: Error opening connection to %s; {%s}", responseCode, serverUrl.String(), err))
+		panic(fmt.Sprintf("%s: Error opening connection to %s; {%s}", responseCode, serverUrl.String(), err))
 	}
 
 	return c, nil
@@ -66,17 +70,19 @@ func openConnection(token string) (*websocket.Conn, error) {
 
 func readMessages(outGoingMessages chan string, connection *websocket.Conn) {
 	for {
+		// fmt.Println("Reading messages")
 		_, message, err := connection.ReadMessage()
 		if err != nil {
-			log.Printf("Error reading message from connection: {%s}\n", err)
+			log.Printf("Error reading message from connection. Connection may have been closed: {%s}\n", err)
 			return
 		}
+		// fmt.Printf("Sending message on outbound channel %s\n", string(message))
 		outGoingMessages <- string(message)
+		// fmt.Println("Message sent")
 	}
-
 }
 
-func makeSubscriptionString(symbol string) string {
-	return fmt.Sprintf("{'type': 'subscribe-news', 'symbol': '%s'", symbol)
+func makeSubscriptionString(symbol string) []byte {
+	msg, _ := json.Marshal(map[string]interface{}{"type": "subscribe", "symbol": symbol})
+	return msg
 }
-

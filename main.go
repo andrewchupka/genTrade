@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	constants "genTrade/helpers"
 	finnIntegration "genTrade/integrations"
-	
 
 	"github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
@@ -16,7 +16,7 @@ func main() {
 	// getFinancials(*finn)
 
 	// hard coded to getting bitcoin
-	finn.TradeLookup(constants.SYMBOL_LIST[3])
+	finn.TradeLookup(constants.SYMBOL_LIST[:])
 }
 
 func doLookup(finn finnIntegration.Finnhub) []finnhub.SymbolLookup{
@@ -39,7 +39,7 @@ func getFinancials(finn finnIntegration.Finnhub) []finnhub.BasicFinancials {
 	
 	for _, item := range resultList {
 		fmt.Println("Display Symbol:", item.GetSymbol())
-		data, _ := item.MarshalJSON()
+		data, _ := json.Marshal(item)
 		fmt.Println("Data: ", string(data))
 		fmt.Println()
 		
