@@ -5,6 +5,8 @@ import (
 	"fmt"
 	constants "genTrade/helpers"
 	finnIntegration "genTrade/integrations"
+	"os"
+	"os/signal"
 
 	"github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
@@ -16,7 +18,18 @@ func main() {
 	// getFinancials(*finn)
 
 	// hard coded to getting bitcoin
-	finn.TradeLookup(constants.SYMBOL_LIST[:])
+	for _, cryptoSymbol := range(constants.CRYPTO_LIST) {
+		go finn.TradeLookup(cryptoSymbol)
+	}
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+	<- interrupt
+	
+
+	// finn.TradeLookup(constants.SYMBOL_LIST[3])
+
+	
 }
 
 func doLookup(finn finnIntegration.Finnhub) []finnhub.SymbolLookup{
