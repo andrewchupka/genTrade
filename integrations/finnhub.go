@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 	"regexp"
+	structs "genTrade/structs"
 
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
@@ -156,18 +157,16 @@ func (finn *Finnhub) TradeLookup(symbol string) {
 		case message := <- messages:
 			fmt.Printf("In Finnhub messages: %s\n", message)
 
-			var tradeMessage map[string]interface{}
+			var tradeMessage structs.LiveTrade
 			err := json.Unmarshal([]byte(message), &tradeMessage) 
 			if err != nil {
 				log.Printf("Could not unmarshall trade message: {%s}\n", err)
 				continue
 			}
 
-			if (tradeMessage["type"] == "trade") {
-				var dataArray []interface{} = tradeMessage["data"].([]interface{})
-				for _, item := range(dataArray) {
-					marshalledItem, _ := json.Marshal(item)
-					file.WriteString(fmt.Sprintf("%s\n", marshalledItem))	
+			if (tradeMessage.DataType == "trade") {
+				for _, item := range(tradeMessage.Data) {
+					file.WriteString(fmt.Sprintf("%s\n", item.Stringify()))	
 				}
 			}
 		}
