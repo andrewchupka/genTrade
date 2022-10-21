@@ -16,7 +16,16 @@ func main() {
 	// getFinancials(*finn)
 
 	// hard coded to getting bitcoin
-	finn.TradeLookup(constants.SYMBOL_LIST[:])
+	finishedWriting := make (chan string, len(constants.CRYPTO_LIST))
+	for _, cryptoSymbol := range(constants.CRYPTO_LIST) {
+		go finn.TradeLookup(cryptoSymbol, finishedWriting)
+	}
+
+	for _, item := range constants.CRYPTO_LIST{
+		<-finishedWriting
+		fmt.Println("Finished writing", item)
+	}
+	
 }
 
 func doLookup(finn finnIntegration.Finnhub) []finnhub.SymbolLookup{

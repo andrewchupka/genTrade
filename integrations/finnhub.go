@@ -2,11 +2,17 @@ package integrations
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	constants "genTrade/helpers"
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
+	"time"
+	"regexp"
+	structs "genTrade/structs"
 
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
@@ -114,15 +120,43 @@ func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancial
 	
 }
 
-func (finn *Finnhub) TradeLookup(symbols []string) {
+func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
 	messages := make(chan string)
 
-	for _, symbol := range(symbols) {
-		go handleWebSocketConnection(symbol, messages, TOKEN)
+	sanitizedFilename := regexp.MustCompile(`[!"#$%&':;]`).ReplaceAllString(symbol, "_")
+
+	now := time.Now()
+	file, err := os.OpenFile(
+		fmt.Sprintf(
+			"%s/%s_%d_%d_%d.txt",
+			constants.TRADE_OUTPUT_DIR,
+			strings.ToLower(sanitizedFilename), 
+			now.Year(), 
+			now.Month(), 
+			now.Day()),
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+		0755)
+
+	if (err != nil) {
+		fmt.Println(err)
+		panic(err)
 	}
+
+	trades := structs.MakeTradeHeap()
+
+	defer func(trades structs.TradeHeap, file os.File, finishedWriting chan string ) {
+		value, _ := json.Marshal(trades.GetData())
+
+		file.WriteString(fmt.Sprintf("%s\n", value))	
+		file.Close()
+
+		finishedWriting <- file.Name()
+	}(*trades, *file, finishedWriting)
+
+	go handleWebSocketConnection(symbol, messages, TOKEN)
 
 	for {
 		select {
@@ -132,6 +166,18 @@ func (finn *Finnhub) TradeLookup(symbols []string) {
 		case message := <- messages:
 			fmt.Printf("In Finnhub messages: %s\n", message)
 
+			var tradeMessage structs.LiveTrade
+			err := json.Unmarshal([]byte(message), &tradeMessage) 
+			if err != nil {
+				log.Printf("Could not unmarshall trade message: {%s}\n", err)
+				continue
+			}
+
+			if (tradeMessage.Type == "trade") {
+				for _, item := range(tradeMessage.Data) {
+					trades.Push(&item)
+				}
+			}
 		}
 	}
 }
