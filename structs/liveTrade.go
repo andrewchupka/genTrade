@@ -4,6 +4,6 @@ import (
 )
 
 type LiveTrade struct {
-	Data []Trade
-	DataType string `json:type`
+	Data []Trade `json:"data"`
+	Type string `json:"type"`
 }

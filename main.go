@@ -5,8 +5,6 @@ import (
 	"fmt"
 	constants "genTrade/helpers"
 	finnIntegration "genTrade/integrations"
-	"os"
-	"os/signal"
 
 	"github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
@@ -18,17 +16,15 @@ func main() {
 	// getFinancials(*finn)
 
 	// hard coded to getting bitcoin
+	finishedWriting := make (chan string, len(constants.CRYPTO_LIST))
 	for _, cryptoSymbol := range(constants.CRYPTO_LIST) {
-		go finn.TradeLookup(cryptoSymbol)
+		go finn.TradeLookup(cryptoSymbol, finishedWriting)
 	}
 
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-	<- interrupt
-	
-
-	// finn.TradeLookup(constants.SYMBOL_LIST[3])
-
+	for _, item := range constants.CRYPTO_LIST{
+		<-finishedWriting
+		fmt.Println("Finished writing", item)
+	}
 	
 }
 
