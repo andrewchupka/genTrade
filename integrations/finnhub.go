@@ -4,14 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	constants "genTrade/helpers"
+	"genTrade/helpers"
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"sync"
-	"time"
-	"regexp"
+
 	structs "genTrade/structs"
 
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
@@ -33,21 +31,20 @@ func NewFinnhub() *Finnhub {
 	return finn
 }
 
-
 func (finn *Finnhub) Lookup(symb string) finnhub.SymbolLookup {
 	fmt.Println("Performing lookup for ", symb)
 	res, _, err := finn.client.SymbolSearch(context.Background()).Q(symb).Execute()
-	if (err != nil) {
+	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
-	
+
 	fmt.Println("Finished lookup for ", symb)
 
 	return res
 }
 
-func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup{
+func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup {
 	var symbolsLength int = len(list)
 
 	var wg sync.WaitGroup
@@ -69,26 +66,26 @@ func (finn *Finnhub) ListLookup(list []string) []finnhub.SymbolLookup{
 	close(lookupChannel)
 
 	var resultList []finnhub.SymbolLookup
-	for  result := range lookupChannel {
+	for result := range lookupChannel {
 		resultList = append(resultList, result)
 	}
 	return resultList
 
 }
 
-func (finn *Finnhub) BasicFinancials(symb string) finnhub.BasicFinancials{
+func (finn *Finnhub) BasicFinancials(symb string) finnhub.BasicFinancials {
 	fmt.Printf("Performing basic financial lookup for %s\n", symb)
 
 	res, _, err := finn.client.CompanyBasicFinancials(context.Background()).Symbol(symb).Metric("all").Execute()
-	if (err != nil) {
+	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
-	
+
 	fmt.Println("Finished financial lookup for ", symb)
 
 	return res
-	
+
 }
 
 func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancials {
@@ -113,11 +110,11 @@ func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancial
 	close(lookupChannel)
 
 	var resultList []finnhub.BasicFinancials
-	for  result := range lookupChannel {
+	for result := range lookupChannel {
 		resultList = append(resultList, result)
 	}
 	return resultList
-	
+
 }
 
 func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
@@ -126,35 +123,18 @@ func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
 
 	messages := make(chan string)
 
-	sanitizedFilename := regexp.MustCompile(`[!"#$%&':;]`).ReplaceAllString(symbol, "_")
-
-	now := time.Now()
-	file, err := os.OpenFile(
-		fmt.Sprintf(
-			"%s/%s_%d_%d_%d.txt",
-			constants.TRADE_OUTPUT_DIR,
-			strings.ToLower(sanitizedFilename), 
-			now.Year(), 
-			now.Month(), 
-			now.Day()),
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
-		0755)
-
-	if (err != nil) {
-		fmt.Println(err)
-		panic(err)
-	}
+	file := helpers.MakeOutputFile(symbol, helpers.TRADE_OUTPUT_DIR)
 
 	trades := structs.MakeTradeHeap()
 
-	defer func(trades structs.TradeHeap, file os.File, finishedWriting chan string ) {
+	defer func(trades structs.TradeHeap, file os.File, finishedWriting chan string) {
 		value, _ := json.Marshal(trades.GetData())
 
-		file.WriteString(fmt.Sprintf("%s\n", value))	
+		file.WriteString(fmt.Sprintf("%s\n", value))
 		file.Close()
 
 		finishedWriting <- file.Name()
-	}(*trades, *file, finishedWriting)
+	}(*trades, file, finishedWriting)
 
 	go handleWebSocketConnection(symbol, messages, TOKEN)
 
@@ -163,18 +143,18 @@ func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
 		case <-interrupt:
 			log.Println("Interrupted")
 			return
-		case message := <- messages:
+		case message := <-messages:
 			fmt.Printf("In Finnhub messages: %s\n", message)
 
 			var tradeMessage structs.LiveTrade
-			err := json.Unmarshal([]byte(message), &tradeMessage) 
+			err := json.Unmarshal([]byte(message), &tradeMessage)
 			if err != nil {
 				log.Printf("Could not unmarshall trade message: {%s}\n", err)
 				continue
 			}
 
-			if (tradeMessage.Type == "trade") {
-				for _, item := range(tradeMessage.Data) {
+			if tradeMessage.Type == "trade" {
+				for _, item := range tradeMessage.Data {
 					trades.Push(&item)
 				}
 			}
