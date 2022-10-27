@@ -13,13 +13,13 @@ type TradeGene struct {
 	geneMatrix [8][8]int
 }
 
-func MakeGene() *TradeGene {
+func MakeGene() TradeGene {
 	rand.Seed(time.Now().UnixNano())
 	tradeGene := new(TradeGene)
 	tradeGene.volumeThreshold = generateSizeTreshold()
 	tradeGene.velocityThreshold = generateVelocityThreshold()
 	tradeGene.geneMatrix = generateGeneMatrix()
-	return tradeGene
+	return *tradeGene
 }
 
 func MakeGeneFromFile() *TradeGene {

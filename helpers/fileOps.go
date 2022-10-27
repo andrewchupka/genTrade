@@ -10,14 +10,15 @@ import (
 )
 
 func MakeOutputFile(symbol string, outputDir string) os.File {
-	sanitizedFilename := regexp.MustCompile(`[!"#$%&':;]`).ReplaceAllString(symbol, "_")
+	sanitizedFilename := PathSanitizer(symbol)
+	sanitizedDirName := PathSanitizer(outputDir)
 
 	now := time.Now()
 	file, err := os.OpenFile(
 		fmt.Sprintf(
 			"%s%s_%d_%d_%d.txt",
-			outputDir,
-			strings.ToLower(sanitizedFilename),
+			sanitizedDirName,
+			sanitizedFilename,
 			now.Year(),
 			now.Month(),
 			now.Day()),
@@ -30,4 +31,8 @@ func MakeOutputFile(symbol string, outputDir string) os.File {
 	}
 
 	return *file
+}
+
+func PathSanitizer(item string) string {
+	return strings.ToLower(regexp.MustCompile(`[!"#$%&':;]`).ReplaceAllString(item, "_"))
 }
