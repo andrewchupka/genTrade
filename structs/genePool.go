@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"genTrade/helpers"
 )
 
 type GenePool struct {
 	pool [helpers.POOL_POPULATION]TradeGene
 	symbol string
+	TradeChannel chan Trade
 }
 
 func MakeGenePool(symbol string) *GenePool {
@@ -18,8 +20,34 @@ func MakeGenePool(symbol string) *GenePool {
 	for i := 0; i < helpers.POOL_POPULATION; i++ {
 		genePool.pool[i] = MakeGene()
 	}
+	genePool.TradeChannel = make(chan Trade, helpers.TRADE_CHANNEL_LEN)
 
 	return genePool
+}
+
+func (genePool *GenePool) Process() {
+
+	//  have the genes begin processing
+	for _, gene := range genePool.pool {
+		go gene.Process()
+	}
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	defer genePool.closeChannels()
+
+	for {
+		select {
+		case <-interrupt:
+			log.Println("GenePool: Interrupted")
+			return
+		case message := <-genePool.TradeChannel:
+			for _, gene := range genePool.pool {
+				gene.TradeChannel<-message
+			}
+		}
+	}
 }
 
 func (genePool *GenePool) ExportGenePool() {
@@ -51,4 +79,10 @@ func (genePool *GenePool) ExportGenePool() {
 	}
 	fmt.Println("Finished writing genetic data")
 
+}
+
+func (genePool *GenePool) closeChannels() {
+	for _, gene := range genePool.pool {
+		close(gene.TradeChannel)
+	}
 }

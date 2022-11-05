@@ -2,15 +2,17 @@ package structs
 
 import (
 	"fmt"
+	"genTrade/helpers"
 	"math/rand"
-	"time"
 	"os"
+	"time"
 )
 
 type TradeGene struct {
 	volumeThreshold float64
 	velocityThreshold float64
 	geneMatrix [8][8]int
+	TradeChannel chan Trade
 }
 
 func MakeGene() TradeGene {
@@ -19,11 +21,19 @@ func MakeGene() TradeGene {
 	tradeGene.volumeThreshold = generateSizeTreshold()
 	tradeGene.velocityThreshold = generateVelocityThreshold()
 	tradeGene.geneMatrix = generateGeneMatrix()
+	tradeGene.TradeChannel = make(chan Trade, helpers.TRADE_CHANNEL_LEN)
 	return *tradeGene
 }
 
 func MakeGeneFromFile() *TradeGene {
 	return new(TradeGene)
+}
+
+func (tradeGene *TradeGene) Process() {
+	for {
+		message := <-tradeGene.TradeChannel
+		fmt.Println("In TradeGene: ", message)
+	}
 }
 
 func (tradeGene *TradeGene) WriteToFile(file os.File) {

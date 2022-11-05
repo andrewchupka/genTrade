@@ -117,24 +117,25 @@ func (finn *Finnhub) ListBasicFinancials(list []string) []finnhub.BasicFinancial
 
 }
 
-func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
+func (finn *Finnhub) LiveTradeFeed(symbol string, finishedWriting chan string, poolChan chan structs.Trade) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
-	messages := make(chan string)
-
-	file := helpers.MakeOutputFile(symbol, helpers.TRADE_OUTPUT_DIR)
+	messages := make(chan string, helpers.TRADE_CHANNEL_LEN)
 
 	trades := structs.MakeTradeHeap()
 
-	defer func(trades structs.TradeHeap, file os.File, finishedWriting chan string) {
+	defer func(trades structs.TradeHeap, symbol string, finishedWriting chan string, poolChan chan structs.Trade) {
+		file := helpers.MakeOutputFile(symbol, helpers.TRADE_OUTPUT_DIR)
 		value, _ := json.Marshal(trades.GetData())
 
 		file.WriteString(fmt.Sprintf("%s\n", value))
 		file.Close()
 
 		finishedWriting <- file.Name()
-	}(*trades, file, finishedWriting)
+
+		close(poolChan)
+	}(*trades, symbol, finishedWriting, poolChan)
 
 	go handleWebSocketConnection(symbol, messages, TOKEN)
 
@@ -156,6 +157,7 @@ func (finn *Finnhub) TradeLookup(symbol string, finishedWriting chan string) {
 			if tradeMessage.Type == "trade" {
 				for _, item := range tradeMessage.Data {
 					trades.Push(&item)
+					poolChan<-item
 				}
 			}
 		}

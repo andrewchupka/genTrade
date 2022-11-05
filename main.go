@@ -11,24 +11,23 @@ import (
 
 func main() {
 	
-	
+	finn := finnIntegration.NewFinnhub()
+	// doLookup(*finn)
+	// getFinancials(*finn)
 
-	// finn := finnIntegration.NewFinnhub()
-	// // doLookup(*finn)
-	// // getFinancials(*finn)
-
-	// // hard coded to getting bitcoin
-	// finishedWriting := make (chan string, len(helpers.CRYPTO_LIST))
+	// hard coded to getting bitcoin
+	finishedWriting := make (chan string, len(helpers.CRYPTO_LIST))
 	for _, cryptoSymbol := range(helpers.CRYPTO_LIST) {
-		// go finn.TradeLookup(cryptoSymbol, finishedWriting)
 		pool := structs.MakeGenePool(cryptoSymbol)
-		pool.ExportGenePool()
+		// go pool.Process()
+		go finn.LiveTradeFeed(cryptoSymbol, finishedWriting, pool.TradeChannel)
+
 	}
 
-	// for _, item := range helpers.CRYPTO_LIST{
-	// 	<-finishedWriting
-	// 	fmt.Println("Finished writing", item)
-	// }
+	for _, item := range helpers.CRYPTO_LIST{
+		<-finishedWriting
+		fmt.Println("Finished writing", item)
+	}
 
 }
 

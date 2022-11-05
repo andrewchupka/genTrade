@@ -11,4 +11,5 @@ var TRADE_OUTPUT_DIR = "./data/tradeData/"
 
 var GENE_POOL_DIR = "./data/genePool/"
 
-const POOL_POPULATION int = 100
+const POOL_POPULATION int = 10
+const TRADE_CHANNEL_LEN int  = 100

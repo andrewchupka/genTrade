@@ -31,27 +31,17 @@ func handleWebSocketConnection(symbol string, outGoingMessages chan string, toke
 		panic(fmt.Sprintf("Error writing on connection: {message: %s}; {error: %s}", body, err))
 	}
 
-	messageStream := make(chan string)
-
-	go readMessages(messageStream, connection)
+	go readMessages(outGoingMessages, connection)
 
 	fmt.Println("Popping messages off the channel")
-	for {
-
-		select {
-		case message := <-messageStream:
-			outGoingMessages <- message
-			// log.Println(message)
-		case <-interrupt:
-			err := connection.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Printf("Error closing connection: {%s}\n", err)
-			}
-			log.Println("Closed connection to websocket")
-			return
-		}
+	
+	<-interrupt
+	err = connection.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	if err != nil {
+		log.Printf("Error closing connection: {%s}\n", err)
 	}
-
+	log.Println("Closed connection to websocket")
+	
 }
 
 func openConnection(token string) (*websocket.Conn, error) {
